@@ -21,8 +21,8 @@ import { Coordinate as Point } from './Game/GameTypes';
 import { board, MoveResult } from './GameLogic';
 
 const handleP1Move: Implementation.S13 = new Implementation.S13({
-    Pos: (move: Point) => {
-        const result = board.p1(move);
+    Pos: async (move: Point) => {
+        const result = await board.p1(move);
         switch (result) {
             case MoveResult.Win:
                 board.clear();
@@ -51,8 +51,8 @@ const handleP1Move: Implementation.S13 = new Implementation.S13({
 });
 
 const handleP2Move = new Implementation.S19({
-    Pos: (move: Point) => {
-        const result = board.p1(move);
+    Pos: async (move: Point) => {
+        const result = await board.p1(move);
         switch (result) {
             case MoveResult.Win:
                 board.clear();
