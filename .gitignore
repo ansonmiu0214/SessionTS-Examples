@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+# React buld
+build/
+
+# Misc
+.DS_Store
+.pnp
+.pnp.js
