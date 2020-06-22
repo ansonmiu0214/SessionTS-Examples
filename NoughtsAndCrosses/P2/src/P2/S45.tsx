@@ -16,7 +16,7 @@ import {
     ReceiveHandler
 } from './Session';
 
-import { Coordinate as Point } from "./Types";
+import { Coordinate as Point } from "./GameTypes";
 
 
 // ==================
