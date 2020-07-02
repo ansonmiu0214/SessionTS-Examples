@@ -10,7 +10,9 @@ export default class ConfirmCancel extends S14 {
 
     return <div>
       <h3>Split Proposal Rejected...</h3>
-      <ConfirmCancel><button>Close Transaction</button></ConfirmCancel>
+      <div>
+        <ConfirmCancel><button>Close Transaction</button></ConfirmCancel>
+      </div>
     </div>;
   }
 

@@ -10,7 +10,9 @@ export default class ConfirmBuy extends S13 {
 
     return <div>
       <h3>Split Proposal Accepted!</h3>
-      <ConfirmBuy><button>Confirm to Seller</button></ConfirmBuy>
+      <div>
+        <ConfirmBuy><button>Confirm to Seller</button></ConfirmBuy>
+      </div>
     </div>;
   }
 

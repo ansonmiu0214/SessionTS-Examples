@@ -20,7 +20,9 @@ export default class SendTitle extends S8<State> {
         })}
         placeholder='Enter title'
       />
-      <SendTitle><button>Propose</button></SendTitle>	
+      <div>
+        <SendTitle><button>Propose</button></SendTitle>	
+      </div>
     </div>;	
   }
 }

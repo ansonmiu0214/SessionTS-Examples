@@ -26,7 +26,9 @@ export default class ProposeSplit extends S11<State> {
         })}
         placeholder='Enter split'
       />
-      <SendSplit><button>Propose</button></SendSplit>	
+      <div>
+        <SendSplit><button>Propose</button></SendSplit>	
+      </div>
     </div>;	
   }
 }

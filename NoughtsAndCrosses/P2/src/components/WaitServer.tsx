@@ -11,17 +11,17 @@ export default class WaitServer extends S45 {
   declare context: React.ContextType<typeof Context>;
 
   Win(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
     this.context.setResult(Result.Win);
   }
 
   Draw(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
     this.context.setResult(Result.Draw);
   }
 
   Update(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
   }
 
   render() {

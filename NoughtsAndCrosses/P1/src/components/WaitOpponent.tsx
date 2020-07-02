@@ -11,17 +11,17 @@ export default class WaitOpponent extends S34 {
   declare context: React.ContextType<typeof Context>;
 
   Lose(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
     this.context.setResult(Result.Lose);
   }
 
   Draw(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
     this.context.setResult(Result.Draw);
   }
 
   Update(point: Point) {
-    this.context.updateMove(Cell.P1, point);
+    this.context.updateMove(Cell.P2, point);
   }
 
   render() {

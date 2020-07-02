@@ -226,8 +226,10 @@ class A extends React.Component<Props & Transport, ComponentState> {
                             }
                         }
                     };
-
-                    return <div {...props}>{this.props.children}</div>;
+                    
+                    return React.Children.map(this.props.children, child => (
+                        React.cloneElement(child as React.ReactElement, props)
+                    ));
                 }
             }
         }
