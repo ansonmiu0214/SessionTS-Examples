@@ -3,7 +3,7 @@
  * Export game board instance.
  */
 
-import { Coordinate as Point } from './Game/GameTypes';
+import { Coordinate as Point } from './GameTypes';
 
 enum Cell { Empty, P1, P2 };
 export enum MoveResult { Win, Draw, Continue };
@@ -64,5 +64,17 @@ class Board {
 
 }
 
-// Initialise state
-export const board = new Board();
+const AllGames = new Map<string, Board>();
+
+export const Games = {
+
+    initialise: (gameID: string) => {
+        const board = new Board();
+        AllGames.set(gameID, board);
+        return board;
+    },
+
+    delete: (gameID: string) => {
+        AllGames.delete(gameID);
+    }
+}

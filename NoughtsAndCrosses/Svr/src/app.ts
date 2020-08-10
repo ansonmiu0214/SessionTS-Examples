@@ -14,78 +14,70 @@ const wss = new WebSocket.Server({ server });
 // Implement protocol
 // ==================
 
-import { Labels, Implementation } from './Game/EFSM'
-import { Svr } from './Game/Svr';
-import { Coordinate as Point } from './Game/GameTypes';
+import { Session, Svr } from './Game/Svr';
+import { Coordinate as Point } from './GameTypes';
+import { Games, MoveResult } from './GameLogic';
 
-import { board, MoveResult } from './GameLogic';
+const gameManager = (gameID: string) => {
 
-const handleP1Move: Implementation.S13 = new Implementation.S13({
-    Pos: async (move: Point) => {
-        const result = await board.p1(move);
-        switch (result) {
-            case MoveResult.Win:
-                board.clear();
-                return new Implementation.S15(
+    const board = Games.initialise(gameID);
+
+    const handleP1Move = Session.Initial({
+        Pos: async (Next, move) => {
+            switch (await board.p1(move)) {
+                case MoveResult.Win:
                     // Send losing result to P2
-                    [Labels.S15.Lose, [move], new Implementation.S16(
+                    return Next.Lose([move], Next => (
                         // Send winning result to P1
-                        [Labels.S16.Win, [move], new Implementation.Terminal()]
-                    )]
-                );
-            case MoveResult.Draw:
-                board.clear();
-                return new Implementation.S15(
-                    [Labels.S15.Draw, [move], new Implementation.S17(
-                        [Labels.S17.Draw, [move], new Implementation.Terminal()]
-                    )]
-                );
-            case MoveResult.Continue:
-                return new Implementation.S15(
-                    [Labels.S15.Update, [move], new Implementation.S18(
-                        [Labels.S18.Update, [move], handleP2Move]
-                    )]
-                )
+                        Next.Win([move], Session.Terminal)
+                    ));
+                case MoveResult.Draw:
+                    return Next.Draw([move], Next => (
+                        Next.Draw([move], Session.Terminal)
+                    ));
+                case MoveResult.Continue:
+                    return Next.Update([move], Next => (
+                        Next.Update([move], handleP2Move)
+                    ));
+            }
         }
-    }
-});
+    });
 
-const handleP2Move = new Implementation.S19({
-    Pos: async (move: Point) => {
-        const result = await board.p1(move);
-        switch (result) {
-            case MoveResult.Win:
-                board.clear();
-                return new Implementation.S20(
-                    [Labels.S20.Lose, [move], new Implementation.S21(
-                        [Labels.S21.Win, [move], new Implementation.Terminal()]
-                    )]
-                );
-            case MoveResult.Draw:
-                board.clear();
-                return new Implementation.S20(
-                    [Labels.S20.Draw, [move], new Implementation.S22(
-                        [Labels.S22.Draw, [move], new Implementation.Terminal()]
-                    )]
-                );
-            case MoveResult.Continue:
-                return new Implementation.S20(
-                    [Labels.S20.Update, [move], new Implementation.S23(
-                        [Labels.S23.Update, [move], handleP1Move]
-                    )]
-                )
+    const handleP2Move = Session.S19({
+        Pos: async (Next, move) => {
+            switch (await board.p2(move)) {
+                case MoveResult.Win:
+                    return Next.Lose([move], Next => (
+                        Next.Win([move], Session.Terminal)
+                    ));
+                case MoveResult.Draw:
+                    return Next.Draw([move], Next => (
+                        Next.Draw([move], Session.Terminal)
+                    ));
+                case MoveResult.Continue:
+                    return Next.Update([move], Next => (
+                        Next.Update([move], handleP1Move)
+                    ));
+            }
         }
-    }
-});
+    });
+
+    return handleP1Move;
+}
 
 // ============
 // Execute EFSM
 // ============
 
-new Svr(wss, handleP1Move, (role, reason) => {
-    // Simple cancellation handler
-    console.log(`${role} cancelled session because of ${reason}`);
-});
+new Svr(
+    wss,
+    (gameID, role, reason) => {
+        // Simple cancellation handler
+        console.log(`${gameID}: ${role} cancelled session because of ${reason}`);
+        Games.delete(gameID);
+    },
+    gameManager,
+)
 
 const PORT = Number(process.env.PORT) || 8080;
 server.listen(PORT, () => {
